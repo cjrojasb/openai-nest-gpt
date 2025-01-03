@@ -8,6 +8,11 @@ export class GptService {
   private openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
+
+  async health() {
+    return 'OK';
+  }
+
   // only for handle use cases
   async orthographyCheck(orthographyDto: OrthographyDto) {
     return await orthographyCheckUseCase(this.openai, {
