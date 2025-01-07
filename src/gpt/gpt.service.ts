@@ -5,6 +5,8 @@ import { ProsConsDiscusserDto } from './dto/pro-cons-discusser.dto';
 import { prosConsDiscusserStreamUseCase } from './use-cases/pros-cons-discusser-stream.use-case';
 import { prosConsDiscusserUseCase } from './use-cases/pros-cons-discusser.use-case';
 import OpenAI from 'openai';
+import { TranslateDto } from './dto/translate.dto';
+import { translateUseCase } from './use-cases/translate.use-case';
 
 @Injectable()
 export class GptService {
@@ -32,6 +34,13 @@ export class GptService {
   async prosConsDiscusserStream(prosConsDiscusserDto: ProsConsDiscusserDto) {
     return await prosConsDiscusserStreamUseCase(this.openai, {
       prompt: prosConsDiscusserDto.prompt,
+    });
+  }
+
+  async translate(translateDto: TranslateDto) {
+    return await translateUseCase(this.openai, {
+      prompt: translateDto.prompt,
+      lang: translateDto.lang,
     });
   }
 }
