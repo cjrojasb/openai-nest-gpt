@@ -13,16 +13,17 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { AudioToTextDto } from './dto/audio-to-text.dto';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { GptService } from './gpt.service';
+import { ImageGenerationDto } from './dto/image-generation.dto';
 import { OrthographyDto } from './dto/orthography.dto';
 import { ProsConsDiscusserDto } from './dto/pro-cons-discusser.dto';
-import type { Response } from 'express';
-import { TranslateDto } from './dto/translate.dto';
 import { TextToAudioDto } from './dto/text-to-audio.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { TranslateDto } from './dto/translate.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { AudioToTextDto } from './dto/audio-to-text.dto';
+import type { Response } from 'express';
 
 @Controller('gpt')
 export class GptController {
@@ -119,5 +120,20 @@ export class GptController {
     @Body() audioToTextDto: AudioToTextDto,
   ) {
     return this.gptService.audioToText(file, audioToTextDto);
+  }
+
+  @Post('image-generation')
+  async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
+    return await this.gptService.imageGeneration(imageGenerationDto);
+  }
+
+  @Get('image-generation/:filename')
+  getImageGeneration(
+    @Param('filename') filename: string,
+    @Res() res: Response,
+  ) {
+    const filePath = this.gptService.getGeneratedImage(filename);
+    res.status(HttpStatus.OK);
+    res.sendFile(filePath);
   }
 }
