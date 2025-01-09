@@ -50,10 +50,8 @@ const editImage = async (
   openai: OpenAI,
   { prompt, originalImage, maskImage }: Options,
 ) => {
-  // originalImage={{API_URL}}/image-generation/7974eda1-1b71-494c-a388-28ead64ebb89.png
-  // maskImage=Base64;AASDADASDASDASDASDASDASDASD
-  const pngImagePath = await downloadImageAsPng(originalImage);
-  const maskPath = await downloadBase64ImageAsPng(maskImage);
+  const pngImagePath = await downloadImageAsPng(originalImage, true);
+  const maskPath = await downloadBase64ImageAsPng(maskImage, true);
 
   const response = await openai.images.edit({
     model: 'dall-e-3',
