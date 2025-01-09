@@ -18,6 +18,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GptService } from './gpt.service';
 import { ImageGenerationDto } from './dto/image-generation.dto';
+import { ImageVariationDto } from './dto/image-variation.dto';
 import { OrthographyDto } from './dto/orthography.dto';
 import { ProsConsDiscusserDto } from './dto/pro-cons-discusser.dto';
 import { TextToAudioDto } from './dto/text-to-audio.dto';
@@ -135,5 +136,10 @@ export class GptController {
     const filePath = this.gptService.getGeneratedImage(filename);
     res.status(HttpStatus.OK);
     res.sendFile(filePath);
+  }
+
+  @Post('image-variation')
+  async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
+    return await this.gptService.imageVariation(imageVariationDto);
   }
 }

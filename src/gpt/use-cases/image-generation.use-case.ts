@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as path from 'path';
 import OpenAI from 'openai';
 import {
   downloadBase64ImageAsPng,

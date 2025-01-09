@@ -15,6 +15,8 @@ import { TranslateDto } from './dto/translate.dto';
 import { translateUseCase } from './use-cases/translate.use-case';
 import { ImageGenerationDto } from './dto/image-generation.dto';
 import { imageGenerationUseCase } from './use-cases/image-generation.use-case';
+import { ImageVariationDto } from './dto/image-variation.dto';
+import { imageVariationUseCase } from './use-cases/image-variation.use-case';
 
 @Injectable()
 export class GptService {
@@ -94,5 +96,9 @@ export class GptService {
     }
 
     return filePath;
+  }
+
+  async imageVariation(imageVariationDto: ImageVariationDto) {
+    return await imageVariationUseCase(this.openai, imageVariationDto);
   }
 }
