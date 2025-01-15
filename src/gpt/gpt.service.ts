@@ -17,6 +17,8 @@ import { ImageGenerationDto } from './dto/image-generation.dto';
 import { imageGenerationUseCase } from './use-cases/image-generation.use-case';
 import { ImageVariationDto } from './dto/image-variation.dto';
 import { imageVariationUseCase } from './use-cases/image-variation.use-case';
+import { ImageToTextDto } from './dto/image-to-text.dto';
+import { imageToTextUseCase } from './use-cases/image-to-text.use-case';
 
 @Injectable()
 export class GptService {
@@ -100,5 +102,12 @@ export class GptService {
 
   async imageVariation(imageVariationDto: ImageVariationDto) {
     return await imageVariationUseCase(this.openai, imageVariationDto);
+  }
+
+  async imageToText(file: Express.Multer.File, imageToTextDto: ImageToTextDto) {
+    return await imageToTextUseCase(this.openai, {
+      imageFile: file,
+      prompt: imageToTextDto.prompt,
+    });
   }
 }

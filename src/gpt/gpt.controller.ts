@@ -18,6 +18,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GptService } from './gpt.service';
 import { ImageGenerationDto } from './dto/image-generation.dto';
+import { ImageToTextDto } from './dto/image-to-text.dto';
 import { ImageVariationDto } from './dto/image-variation.dto';
 import { OrthographyDto } from './dto/orthography.dto';
 import { ProsConsDiscusserDto } from './dto/pro-cons-discusser.dto';
@@ -141,5 +142,37 @@ export class GptController {
   @Post('image-variation')
   async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
     return await this.gptService.imageVariation(imageVariationDto);
+  }
+
+  @Post('image-to-text')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './generated/uploads',
+        filename: (req, file, callback) => {
+          const fileExtension = file.originalname.split('.').pop();
+          const fileName = `${uuidv4()}.${fileExtension}`;
+
+          return callback(null, fileName);
+        },
+      }),
+    }),
+  )
+  async imageToText(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 1000 * 1024 * 5,
+            message: 'File is bigger than 5MB',
+          }),
+          new FileTypeValidator({ fileType: 'image/*' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Body() imageToTextDto: ImageToTextDto,
+  ) {
+    return await this.gptService.imageToText(file, imageToTextDto);
   }
 }
