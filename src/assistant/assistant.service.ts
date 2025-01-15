@@ -1,9 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
 import OpenAI from 'openai';
-import { createThreadUseCase } from './use-cases/create-thread.use-case';
+import { checkRunCompleteStatusUseCase } from './use-cases/check-run-complete-status.use-case';
 import { createMessageUseCase } from './use-cases/create-message.use-case';
-import { QuestionDto } from './dto/question.dto';
 import { createRunUseCase } from './use-cases/create-run.use-case';
+import { createThreadUseCase } from './use-cases/create-thread.use-case';
+import { getMessageListByThreadUseCase } from './use-cases/get-message-list-by-thread.use-case';
+import { Injectable } from '@nestjs/common';
+import { QuestionDto } from './dto/question.dto';
 
 @Injectable()
 export class AssistantService {
@@ -20,6 +22,17 @@ export class AssistantService {
     const run = await createRunUseCase(this.openai, {
       threadId: questionDto.threadId,
     });
-    Logger.log(run);
+
+    await checkRunCompleteStatusUseCase(this.openai, {
+      threadId: questionDto.threadId,
+      runId: run.id,
+    });
+
+    const messages = await getMessageListByThreadUseCase(this.openai, {
+      threadId: questionDto.threadId,
+    });
+
+    // Return messages in descending order
+    return messages.reverse();
   }
 }
